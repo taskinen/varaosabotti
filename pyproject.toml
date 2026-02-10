@@ -1,0 +1,27 @@
+[project]
+name = "varaosabotti"
+version = "0.1.0"
+description = "Monitor varaosahaku.fi for car parts availability"
+readme = "README.md"
+authors = [
+    { name = "Timo Taskinen", email = "timo.taskinen@iki.fi" }
+]
+requires-python = ">=3.13"
+dependencies = [
+    "httpx>=0.28",
+    "beautifulsoup4>=4.13",
+    "lxml>=5.0",
+]
+
+[project.scripts]
+varaosabotti = "varaosabotti.cli:main"
+
+[build-system]
+requires = ["uv_build>=0.10.0,<0.11.0"]
+build-backend = "uv_build"
+
+[dependency-groups]
+dev = [
+    "pytest>=8.0",
+    "ruff>=0.9",
+]
