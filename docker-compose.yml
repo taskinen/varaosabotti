@@ -1,0 +1,10 @@
+services:
+  varaosabotti:
+    build: .
+    restart: unless-stopped
+    environment:
+      VARAOSABOTTI_URL: "https://www.varaosahaku.fi/fi-fi/pb/Hae/Autonosat/s19/Polestar/2/Sisusta"
+      VARAOSABOTTI_CATEGORY: "Hattuhylly"
+      VARAOSABOTTI_INTERVAL: "300"
+      # PUSHOVER_TOKEN: ""
+      # PUSHOVER_USER: ""

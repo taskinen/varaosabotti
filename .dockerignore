@@ -1,0 +1,13 @@
+.venv/
+.git/
+.github/
+__pycache__/
+*.py[oc]
+tests/
+*.md
+!README.md
+*.egg-info/
+build/
+dist/
+.ruff_cache/
+.python-version

@@ -211,11 +211,32 @@ HTTP mocking uses `pytest-httpx` (provides `httpx_mock` fixture automatically).
 
 GitHub Actions workflow in `.github/workflows/ci.yml`. Runs on pushes to `main` and on pull requests targeting `main`.
 
-Two parallel jobs:
+Three parallel jobs:
 - **lint** — `uv run ruff check .`
 - **test** — `uv run pytest`
+- **docker** — builds the Docker image, runs a smoke test (`--help`), starts the service with `docker compose up`, and waits for the healthcheck to pass
 
-Uses `astral-sh/setup-uv@v6` for uv installation and dependency caching. Python version comes from `.python-version`.
+Uses `astral-sh/setup-uv@v6` for uv installation and dependency caching (lint/test jobs). Python version comes from `.python-version`.
+
+## Docker
+
+`Dockerfile` uses a multi-stage build: `ghcr.io/astral-sh/uv:python3.13-bookworm-slim` for building, `python:3.13-slim-bookworm` for runtime. Runs as non-root `appuser`. Uses Python 3.13 (not 3.14) because 3.14 Docker images have limited availability and the project requires `>=3.13`. Includes a `HEALTHCHECK` that verifies the Python runtime and package are intact (`import varaosabotti`).
+
+`docker-compose.yml` runs the monitor as a long-running service with `restart: unless-stopped`. All configuration is via environment variables.
+
+```bash
+docker compose up -d              # Start monitoring in background
+docker compose logs -f            # Follow logs
+docker compose down               # Stop
+
+# One-off commands
+docker compose run --rm varaosabotti --list-categories
+docker compose run --rm varaosabotti --once
+```
+
+Edit `docker-compose.yml` to set `VARAOSABOTTI_URL`, `VARAOSABOTTI_CATEGORY`, and optionally `PUSHOVER_TOKEN` / `PUSHOVER_USER`.
+
+Files: `Dockerfile`, `docker-compose.yml`, `.dockerignore`
 
 ## Dependencies
 

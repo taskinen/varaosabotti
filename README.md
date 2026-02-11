@@ -114,6 +114,33 @@ export PUSHOVER_USER=your_key
 varaosabotti
 ```
 
+## Docker
+
+Run with Docker Compose — no Python or uv installation needed:
+
+```bash
+docker compose up -d
+```
+
+Edit `docker-compose.yml` to configure the monitoring target and optional Pushover credentials:
+
+```yaml
+environment:
+  VARAOSABOTTI_URL: "https://www.varaosahaku.fi/fi-fi/pb/Hae/Autonosat/s19/Polestar/2/Sisusta"
+  VARAOSABOTTI_CATEGORY: "Hattuhylly"
+  VARAOSABOTTI_INTERVAL: "300"
+  # PUSHOVER_TOKEN: ""
+  # PUSHOVER_USER: ""
+```
+
+Useful commands:
+
+```bash
+docker compose logs -f                            # Follow logs
+docker compose down                               # Stop
+docker compose run --rm varaosabotti --list-categories  # One-off commands
+```
+
 ## How it works
 
 1. Fetches the category page via HTTP GET (the site uses Angular SSR, so server-rendered HTML is returned directly — no headless browser needed)

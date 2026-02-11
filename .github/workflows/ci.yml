@@ -24,3 +24,14 @@ jobs:
       - run: uv python install
       - run: uv sync
       - run: uv run pytest
+
+  docker:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - run: docker compose build
+      - run: docker compose run --rm varaosabotti --help
+      - run: docker compose up -d
+      - run: docker compose up --wait --wait-timeout 30
+      - run: docker compose ps
+      - run: docker compose down
