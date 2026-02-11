@@ -30,7 +30,7 @@ https://www.varaosahaku.fi/fi-fi/pb/Hae/Autonosat/s19/Polestar/2/Sisusta
 **2. List available categories** to see what you can monitor:
 
 ```bash
-varaosabotti --url 'https://www.varaosahaku.fi/fi-fi/pb/Hae/Autonosat/s19/Polestar/2/Sisusta' --list-categories
+uv run varaosabotti --url 'https://www.varaosahaku.fi/fi-fi/pb/Hae/Autonosat/s19/Polestar/2/Sisusta' --list-categories
 ```
 
 This prints all categories grouped by section, with `[+]` for available and `[-]` for unavailable parts.
@@ -38,7 +38,7 @@ This prints all categories grouped by section, with `[+]` for available and `[-]
 **3. Start monitoring** a category:
 
 ```bash
-varaosabotti --url '...' --category 'Kattoverhoilu' --interval 60
+uv run varaosabotti --url '...' --category 'Kattoverhoilu' --interval 60
 ```
 
 The tool will poll the page every 60 seconds and log an alert when the category becomes active.
@@ -46,7 +46,7 @@ The tool will poll the page every 60 seconds and log an alert when the category 
 ## Usage
 
 ```
-varaosabotti [OPTIONS]
+uv run varaosabotti [OPTIONS]
 ```
 
 | Option | Default | Env var | Description |
@@ -69,13 +69,13 @@ Categories are matched **exactly** (case-insensitive). Some categories share the
 
 ```bash
 # Simple name
-varaosabotti --url '...' --category 'Kattoverhoilu'
+uv run varaosabotti --url '...' --category 'Kattoverhoilu'
 
 # Parent / child
-varaosabotti --url '...' --category 'Oviverhoilu / Vasen'
+uv run varaosabotti --url '...' --category 'Oviverhoilu / Vasen'
 
 # Group / parent / child (fully qualified)
-varaosabotti --url '...' --category 'Sisusta Ovet / Oviverhoilu / Vasen'
+uv run varaosabotti --url '...' --category 'Sisusta Ovet / Oviverhoilu / Vasen'
 ```
 
 If a category is not found, the tool suggests similar names and exits.
@@ -89,7 +89,7 @@ To receive push notifications on your phone:
 3. Pass both credentials:
 
 ```bash
-varaosabotti --url '...' --category 'Kattoverhoilu' \
+uv run varaosabotti --url '...' --category 'Kattoverhoilu' \
   --pushover-token YOUR_APP_TOKEN \
   --pushover-user YOUR_USER_KEY
 ```
@@ -97,7 +97,7 @@ varaosabotti --url '...' --category 'Kattoverhoilu' \
 Test your setup without monitoring:
 
 ```bash
-varaosabotti --pushover-token YOUR_APP_TOKEN --pushover-user YOUR_USER_KEY --test-notification
+uv run varaosabotti --pushover-token YOUR_APP_TOKEN --pushover-user YOUR_USER_KEY --test-notification
 ```
 
 ## Running with environment variables
@@ -111,7 +111,7 @@ export VARAOSABOTTI_INTERVAL=60
 export PUSHOVER_TOKEN=your_token
 export PUSHOVER_USER=your_key
 
-varaosabotti
+uv run varaosabotti
 ```
 
 ## Docker
