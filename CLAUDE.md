@@ -17,7 +17,7 @@ varaosabotti monitors varaosahaku.fi (a Finnish car parts marketplace) for parts
 ```bash
 uv sync                    # Install dependencies
 uv run varaosabotti --help # Run the tool
-uv run pytest              # Run tests (if present)
+uv run pytest              # Run tests
 uv run ruff check .        # Lint
 ```
 
@@ -31,6 +31,11 @@ src/varaosabotti/
     scraper.py          # HTTP fetching + HTML parsing
     notifier.py         # Log alerts + Pushover notifications
     cli.py              # Arg parsing, main loop, list-categories, test-notification
+tests/
+    conftest.py         # Shared fixtures (sample HTML, sample categories)
+    test_models.py      # Model tests
+    test_scraper.py     # Parser + matching tests
+    test_notifier.py    # Notification tests
 ```
 
 ### Module responsibilities
@@ -181,7 +186,38 @@ uv run varaosabotti --pushover-token TOKEN --pushover-user KEY --test-notificati
 uv run varaosabotti --url '...' --category 'Hattuhylly' --interval 60 --verbose
 ```
 
+## Automated tests
+
+```bash
+uv run pytest              # Run all tests
+uv run pytest -v           # Verbose output
+```
+
+Tests live in `tests/` and cover the core logic (no CLI integration tests):
+
+| File | Covers |
+|---|---|
+| `test_models.py` | `Category` frozen dataclass, `CategoryStatus` enum |
+| `test_scraper.py` | `parse_categories` (HTML→Category list), `find_category` (all path formats), `suggest_categories`, `fetch_page` |
+| `test_notifier.py` | `category_label` (all label variants), `log_alert`, `send_pushover` (success + error), `notify` (with/without Pushover) |
+
+**Fixtures** (`conftest.py`):
+- `sample_html` — minimal HTML mimicking varaosahaku.fi structure (simple links, dropdown with children, active/inactive states, "Suosittuja osia" section to skip, "Kaikki" item to skip)
+- `sample_categories` — pre-built `Category` list matching the HTML fixture
+
+HTTP mocking uses `pytest-httpx` (provides `httpx_mock` fixture automatically).
+
+## CI
+
+GitHub Actions workflow in `.github/workflows/ci.yml`. Runs on pushes to `main` and on pull requests targeting `main`.
+
+Two parallel jobs:
+- **lint** — `uv run ruff check .`
+- **test** — `uv run pytest`
+
+Uses `astral-sh/setup-uv@v6` for uv installation and dependency caching. Python version comes from `.python-version`.
+
 ## Dependencies
 
 **Runtime**: `httpx`, `beautifulsoup4`, `lxml`
-**Dev**: `pytest`, `ruff`
+**Dev**: `pytest`, `pytest-httpx`, `ruff`
