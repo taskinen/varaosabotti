@@ -29,6 +29,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+      - run: cp docker-compose.yml.example docker-compose.yml
       - run: docker compose build
       - run: docker compose run --rm varaosabotti --help
       - run: docker compose up -d

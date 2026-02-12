@@ -214,7 +214,7 @@ GitHub Actions workflow in `.github/workflows/ci.yml`. Runs on pushes to `main` 
 Three parallel jobs:
 - **lint** — `uv run ruff check .`
 - **test** — `uv run pytest`
-- **docker** — builds the Docker image, runs a smoke test (`--help`), starts the service with `docker compose up`, and waits for the healthcheck to pass
+- **docker** — copies `docker-compose.yml.example` to `docker-compose.yml`, builds the Docker image, runs a smoke test (`--help`), starts the service with `docker compose up`, and waits for the healthcheck to pass
 
 Uses `astral-sh/setup-uv@v6` for uv installation and dependency caching (lint/test jobs). Python version comes from `.python-version`.
 
@@ -222,7 +222,14 @@ Uses `astral-sh/setup-uv@v6` for uv installation and dependency caching (lint/te
 
 `Dockerfile` uses a multi-stage build: `ghcr.io/astral-sh/uv:python3.13-bookworm-slim` for building, `python:3.13-slim-bookworm` for runtime. Runs as non-root `appuser`. Uses Python 3.13 (not 3.14) because 3.14 Docker images have limited availability and the project requires `>=3.13`. Includes a `HEALTHCHECK` that verifies the Python runtime and package are intact (`import varaosabotti`).
 
-`docker-compose.yml` runs the monitor as a long-running service with `restart: unless-stopped`. All configuration is via environment variables.
+`docker-compose.yml.example` is an example Compose file tracked in Git. Copy it to `docker-compose.yml` (which is gitignored) and fill in your own configuration:
+
+```bash
+cp docker-compose.yml.example docker-compose.yml
+# Edit docker-compose.yml with your URL, category, and optionally Pushover tokens
+```
+
+The service runs as a long-running monitor with `restart: unless-stopped`. All configuration is via environment variables.
 
 ```bash
 docker compose up -d              # Start monitoring in background
@@ -234,9 +241,7 @@ docker compose run --rm varaosabotti --list-categories
 docker compose run --rm varaosabotti --once
 ```
 
-Edit `docker-compose.yml` to set `VARAOSABOTTI_URL`, `VARAOSABOTTI_CATEGORY`, and optionally `PUSHOVER_TOKEN` / `PUSHOVER_USER`.
-
-Files: `Dockerfile`, `docker-compose.yml`, `.dockerignore`
+Files: `Dockerfile`, `docker-compose.yml.example`, `.dockerignore`
 
 ## Dependencies
 

@@ -8,3 +8,6 @@ wheels/
 
 # Virtual environments
 .venv
+
+# Docker Compose local config (copy docker-compose.yml.example to get started)
+docker-compose.yml
